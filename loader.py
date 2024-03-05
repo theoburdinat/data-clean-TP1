@@ -43,7 +43,8 @@ def sanitize_data(df:pd.DataFrame) -> pd.DataFrame:
         - Formatter montpellier
         - Formatter num tél
         - Formatter fréquence de maintenance 
-        - Code postal si pas correct (5 chiffres) -> mettre pd.NA """
+        - Code postal si pas correct (5 chiffres) -> mettre pd.NA 
+        - Vérifier number of units for lat_coor et long_coor """
     ...
     return df
 
