@@ -87,9 +87,9 @@ def frame_data(df:pd.DataFrame) -> pd.DataFrame:
     return df
 
 
-def load_clean_data(df:pd.DataFrame)-> pd.DataFrame:
+def load_clean_data(data_path:str=DATA_PATH)-> pd.DataFrame:
     """one function to run it all and return a clean dataframe"""
-    df = (df.pipe(load_formatted_data)
+    df = (load_formatted_data(data_path)
           .pipe(sanitize_data)
           .pipe(frame_data)
     )
