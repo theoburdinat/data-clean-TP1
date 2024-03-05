@@ -40,15 +40,24 @@ def sanitize_data(df:pd.DataFrame) -> pd.DataFrame:
     """ One function to do all sanitizing
         Comment on sanitize : 
         - pas d'adresse -> on enleve num voie
-        - Formatter montpellier
-        - Formatter num tél
+        - Formatter montpellier (fait)
+        - Formatter num tél (fait)
         - Formatter fréquence de maintenance 
-        - Code postal si pas correct (5 chiffres) -> mettre pd.NA 
+        - Code postal si pas correct (5 chiffres) -> mettre pd.NA (fait)
         - Vérifier number of units for lat_coor et long_coor """
+    
+    #Code Postal
     for i in range(len(df)):
         if len(df[i].com_cp) != 5:
             df[i].com_cp=pd.NA
+
+    #Formater Montpellier
     df['com_nom'] = df['com_nom'].str.capitalize()
+
+    #Numéro de tel
+    df['Numéro de téléphone'] = df['Numéro de téléphone'].str.replace(r'^(\+?33|0)\s*', r'+33 ', regex=True)
+    df['Numéro de téléphone'] = df['Numéro de téléphone'].str.replace(r'(\d{1})(\d{2})(\d{2})(\d{2})(\d{2})', r'\1 \2 \3 \4 \5', regex=True)
+
     return df
 
 
