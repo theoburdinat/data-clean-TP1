@@ -337,7 +337,7 @@ def sample_framed() -> pd.DataFrame:
                     "Siège du CCAS (Banque d'Acceuil)",
                     'Vestiaire/tribune CLAUDE BEAL',
                     'Ecole élémentaire Winston Churchill - Ecole maternelle Marceline Desbordes-Valmore'],
-            'adresse': ['avenue albert Einstein 34000 Montpellier',
+            'adress': ['avenue albert Einstein 34000 Montpellier',
                          pd.NA,
                          '694-700 rue Jacques-Bounin 34070 Montpellier',
                          'Montpellier',
@@ -351,7 +351,7 @@ def sample_framed() -> pd.DataFrame:
                          '125 place Thermidor 34000 Montpellier',
                          '419 avenue du Dr Jacques Fourcade 34000 Montpellier',
                          '424-460 rue du lavandin 34070 Montpellier'],
-            'tel1': ['+33 4 67 64 87 70',
+            'tel': ['+33 4 67 64 87 70',
                      pd.NA,
                      '+33 4 67 27 46 12',
                      pd.NA,
@@ -379,7 +379,7 @@ def sample_framed() -> pd.DataFrame:
                          pd.NA,
                          'tout les ans',
                          'tous les ans'],
-            'dermnt': [pd.to_datetime('2019-05-15'),
+            'der_mnt': [pd.to_datetime('2019-05-15'),
                        pd.NaT,
                        pd.to_datetime('2019-12-01'),
                        pd.NaT,
@@ -393,7 +393,7 @@ def sample_framed() -> pd.DataFrame:
                        pd.NaT,
                        pd.to_datetime('2019-11-01'),
                        pd.to_datetime('2019-12-01')],
-            'lat_coor1': [3.93392108647369,
+            'lat': [3.93392108647369,
                           np.NaN,
                           3.86476856812559,
                           3.81486877448227,
@@ -407,7 +407,7 @@ def sample_framed() -> pd.DataFrame:
                           np.Nan,
                           3.89668282061293,
                           3.85476904201268],
-            'long_coor1': [43.6136351580956,
+            'long': [43.6136351580956,
                            np.NaN,
                            43.5883499187015,
                            43.6203748790079,
@@ -421,7 +421,9 @@ def sample_framed() -> pd.DataFrame:
                            43.6020241317034,
                            43.5911769531706,
                            43.5995832643803]},
-        dtype=...
+        dtype={'nom': 'string', 'adress': 'string', 'tel': 'string', 
+               'freq_mnt': 'string', 'dermnt': 'string', 
+               'lat': 'float', 'long': 'float'}
     )
     return df
 
