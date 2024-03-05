@@ -50,6 +50,9 @@ def sanitize_data(df:pd.DataFrame) -> pd.DataFrame:
     for i in range(len(df)):
         if len(df[i].com_cp) != 5:
             df[i].com_cp=pd.NA
+        if df[i].adr_voie==pd.NA:
+            df[i].adr_num=pd.NA
+    
 
     #Formater Montpellier
     df['com_nom'] = df['com_nom'].str.capitalize()
