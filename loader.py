@@ -53,7 +53,7 @@ def frame_data(df:pd.DataFrame) -> pd.DataFrame:
 # once they are all done, call them in the general clean loading function
 def load_clean_data(df:pd.DataFrame)-> pd.DataFrame:
     """one function to run it all and return a clean dataframe"""
-    df = (df.pipe(load_formatted_data)
+    df = (load_formatted_data()
           .pipe(sanitize_data)
           .pipe(frame_data)
     )
