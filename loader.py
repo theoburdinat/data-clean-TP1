@@ -45,7 +45,9 @@ def sanitize_data(df:pd.DataFrame) -> pd.DataFrame:
         - Formatter fréquence de maintenance 
         - Code postal si pas correct (5 chiffres) -> mettre pd.NA 
         - Vérifier number of units for lat_coor et long_coor """
-    ...
+    for i in range(len(df)):
+        if len(df[i].com_cp) != 5:
+            df[i].com_cp=pd.NA
     return df
 
 
