@@ -351,7 +351,7 @@ def sample_framed() -> pd.DataFrame:
                          '125 place Thermidor 34000 Montpellier',
                          '419 avenue du Dr Jacques Fourcade 34000 Montpellier',
                          '424-460 rue du lavandin 34070 Montpellier'],
-            'tel': ['+33 4 67 64 87 70',
+            'tel1': ['+33 4 67 64 87 70',
                      pd.NA,
                      '+33 4 67 27 46 12',
                      pd.NA,
@@ -379,7 +379,7 @@ def sample_framed() -> pd.DataFrame:
                          pd.NA,
                          'tout les ans',
                          'tous les ans'],
-            'der_mnt': [pd.to_datetime('2019-05-15'),
+            'dermnt': [pd.to_datetime('2019-05-15'),
                        pd.NaT,
                        pd.to_datetime('2019-12-01'),
                        pd.NaT,
@@ -421,7 +421,7 @@ def sample_framed() -> pd.DataFrame:
                            43.6020241317034,
                            43.5911769531706,
                            43.5995832643803]},
-        dtype={'nom': 'string', 'adress': 'string', 'tel': 'string', 
+        dtype={'nom': 'string', 'adress': 'string', 'tel1': 'string', 
                'freq_mnt': 'string', 'dermnt': 'string', 
                'lat': 'float', 'long': 'float'}
     )
