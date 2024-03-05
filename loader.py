@@ -48,10 +48,8 @@ def sanitize_data(df:pd.DataFrame) -> pd.DataFrame:
     for i in range(len(df)):
         if len(df[i].com_cp) != 5:
             df[i].com_cp=pd.NA
-    return df
-
     df['com_nom'] = df['com_nom'].str.capitalize()
-
+    return df
 
 
 # Define a framing function
