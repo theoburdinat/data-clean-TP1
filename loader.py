@@ -30,8 +30,7 @@ def load_formatted_data(data_fname:str) -> pd.DataFrame:
     """
     df = pd.read_csv(
         data_fname,
-        ...
-        )
+        usecols=['nom', 'adr_num', 'adr_voie', 'com_cp', 'com_nom', 'tel1', 'freq_mnt', 'dermnt', 'lat_coor1', 'long_coor1'])
     return df
 
 
