@@ -55,8 +55,8 @@ def sanitize_data(df:pd.DataFrame) -> pd.DataFrame:
     df['com_nom'] = df['com_nom'].str.capitalize()
 
     #Numéro de tel
-    df['Numéro de téléphone'] = df['Numéro de téléphone'].str.replace(r'^(\+?33|0)\s*', r'+33 ', regex=True)
-    df['Numéro de téléphone'] = df['Numéro de téléphone'].str.replace(r'(\d{1})(\d{2})(\d{2})(\d{2})(\d{2})', r'\1 \2 \3 \4 \5', regex=True)
+    df['tel1'] = df['tel1'].str.replace(r'^(\+?33|0)\s*', r'+33 ', regex=True)
+    df['tel1'] = df['tel1'].str.replace(r'(\d{1})(\d{2})(\d{2})(\d{2})(\d{2})', r'\1 \2 \3 \4 \5', regex=True)
 
     return df
 
