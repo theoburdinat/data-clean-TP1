@@ -54,12 +54,11 @@ To build the loading script, you will proceed with the following steps:
 ## Step 1. Test-oriented problem specification
 Prepare some tests cases that ensure that your cleaning functions work as expected:
 
-1. Select a handful of examples (between 10 and 15) from your data that cover the problems you have identified
-2. Based on these examples, compose a sample dirty data file (`sample_dirty.csv`) that will serve as a testing reference.
+1. Select a handful of examples (between 10 and 15) from your data that cover the problems you have identified. Based on these examples, compose a sample dirty data file (`sample_dirty.csv`) that will serve as a testing reference. **This is done by the teacher and you can see the results in the `data` directory.**
 3. Manually compose a `pd.DataFrame` that corresponds to the `sample_dirty` data loaded with the correct types/formats (`sample_formatted`).
-   Only the pertinent columns should be loaded by this function (any useless columns must not be read)
-4. Manually compose a `pd.DataFrame` where all the sanity problems got fixed (`sample_sanitized`).
-5. Manually compose a `pd.DataFrame` framed as requested (`sample_framed`). Column renaming or merging should be performed at this step.
+   Only the pertinent columns should be loaded by this function (any useless columns must not be read). **This is already specified in `loader_test.py`.**
+4. Manually compose a `pd.DataFrame` where all the sanity problems got fixed (`sample_sanitized`). **This is already specified in `loader_test.py`.**
+5. Manually compose a `pd.DataFrame` framed as requested (`sample_framed`). Column renaming or merging should be performed at this step. **You must complete this case in `loader_test.py`**.
 
 These test cases should be specified in the file `loader_test.py` where indicated.
 
