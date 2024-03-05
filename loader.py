@@ -37,7 +37,13 @@ def load_formatted_data(data_fname:str) -> pd.DataFrame:
 
 # once they are all done, call them in the general sanitizing function
 def sanitize_data(df:pd.DataFrame) -> pd.DataFrame:
-    """ One function to do all sanitizing"""
+    """ One function to do all sanitizing
+        Comment on sanitize : 
+        - pas d'adresse -> on enleve num voie
+        - Formatter montpellier
+        - Formatter num tél
+        - Formatter fréquence de maintenance 
+        - Code postal si pas correct (5 chiffres) -> mettre pd.NA """
     ...
     return df
 
