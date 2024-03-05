@@ -59,6 +59,9 @@ def frame_data(df:pd.DataFrame) -> pd.DataFrame:
     df.rename(columns={'adr_num':'adress'})
     df.rename(columns={'long_coor1':'long'})
     df.rename(columns={'lat_coor1':'lat'})
+    del df['adr_voie']
+    del df['com_cp']
+    del df['com_nom']
     return df
 
 
