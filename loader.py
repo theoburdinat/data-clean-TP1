@@ -39,7 +39,7 @@ def load_formatted_data(data_fname:str) -> pd.DataFrame:
 def sanitize_data(df:pd.DataFrame) -> pd.DataFrame:
     """ One function to do all sanitizing
         Comment on sanitize : 
-        - pas d'adresse -> on enleve num voie
+        - pas d'adresse -> on enleve num voie (fait)
         - Formatter montpellier (fait)
         - Formatter num tél (fait)
         - Formatter fréquence de maintenance 
@@ -50,10 +50,10 @@ def sanitize_data(df:pd.DataFrame) -> pd.DataFrame:
     for i in range(len(df)):
         if len(df[i].com_cp) != 5:
             df[i].com_cp=pd.NA
-        if df[i].adr_voie==pd.NA:
+        if df[i].adr_voie==pd.NA: #pas d'adresse on enleve num voie
             df[i].adr_num=pd.NA
-    
-
+        if df[i].freq_mnt!="": #formatter maintenance
+            df[i].freq_mnt='Tous les ans'
     #Formater Montpellier
     df['com_nom'] = df['com_nom'].str.capitalize()
 
