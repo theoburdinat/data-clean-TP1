@@ -28,35 +28,28 @@ def load_formatted_data(data_fname:str) -> pd.DataFrame:
     """ One function to read csv into a dataframe with appropriate types/formats.
         Note: read only pertinent columns, ignore the others.
     """
-    raw_dataset = pd.read_csv(data_fname, usecols=['nom', 'adr_num', 'adr_voie', 'com_cp', 'com_nom', 'tel1', 'freq_mnt', 'dermnt', 'lat_coor1', 'long_coor1'], encoding ='utf-8', na_values=['', ' '])
+    # Load the dataset
+    raw_dataset = pd.read_csv(data_fname, usecols=['nom', 'adr_num', 'adr_voie', 'com_cp', 'com_nom', 'tel1', 'freq_mnt', 'dermnt', 'lat_coor1', 'long_coor1'], encoding ='utf-8')
     
+    # Copy the loaded dataset to keep the original one 
     cleaned_dataset = raw_dataset.copy()
     
-    cleaned_dataset[['nom', 'adr_num','adr_voie','com_nom','com_cp','tel1','freq_mnt']] = cleaned_dataset[['nom', 'adr_num','adr_voie','com_nom','com_cp','tel1','freq_mnt']].replace(np.NaN, pd.NA)
-    cleaned_dataset['dermnt']=cleaned_dataset['dermnt'].replace(np.NaN, pd.NaT)
+    # Replace all empty strings with null values
+    cleaned_dataset = cleaned_dataset.replace([' '], pd.NA)
+
+    # Convert all string columns to string
+    cleaned_dataset[['nom', 'adr_num', 'adr_voie', 'com_cp', 'com_nom', 'tel1', 'freq_mnt']] = cleaned_dataset[['nom', 'adr_num', 'adr_voie', 'com_cp', 'com_nom', 'tel1', 'freq_mnt']].astype('string')
+
+    # Convert the last maintenance to the datetime format, and replace values ​​that are not convertible to null values
     cleaned_dataset['dermnt']=pd.to_datetime(cleaned_dataset['dermnt'], errors='coerce', format='%Y-%m-%d')
 
-    for index, row in cleaned_dataset.iterrows():
-        if not isinstance(row['nom'], str):
-            cleaned_dataset.loc[index, 'nom'] = str(cleaned_dataset.loc[index, 'nom'])
-        if not isinstance(row['adr_num'], str):
-            cleaned_dataset.loc[index, 'adr_num'] = str(cleaned_dataset.loc[index, 'adr_num'])
-        if not isinstance(row['adr_voie'], str):
-            cleaned_dataset.loc[index, 'adr_voie'] = str(cleaned_dataset.loc[index, 'adr_voie'])
-        if not isinstance(row['com_nom'], str):
-            cleaned_dataset.loc[index, 'com_nom'] = str(cleaned_dataset.loc[index, 'com_nom'])
-        if not isinstance(row['com_cp'], str):
-            cleaned_dataset.loc[index, 'com_cp'] = str(cleaned_dataset.loc[index, 'com_cp'])
-        if not isinstance(row['tel1'], str):
-            cleaned_dataset.loc[index, 'tel1'] = str(cleaned_dataset.loc[index, 'tel1'])
-        if not isinstance(row['freq_mnt'], str):
-            cleaned_dataset.loc[index, 'freq_mnt'] = str(cleaned_dataset.loc[index, 'freq_mnt'])
-    
+    # Convert values that have a date format in maintenance frequency to null values
+    cleaned_dataset['freq_mnt'] = cleaned_dataset['freq_mnt'].where(pd.to_datetime(cleaned_dataset['freq_mnt'], errors='coerce').isna(), pd.NA)
+
+    # Convert latitude and longitude data to string, and if it's not possible set null values
     cleaned_dataset['lat_coor1'] = pd.to_numeric(cleaned_dataset['lat_coor1'], errors='coerce')
     cleaned_dataset['long_coor1'] = pd.to_numeric(cleaned_dataset['long_coor1'], errors='coerce')
-    cleaned_dataset['dermnt'] = cleaned_dataset['dermnt'].astype(str)
-    cleaned_dataset.loc[5, 'dermnt']=str(pd.NaT)
-    cleaned_dataset.loc[5, 'freq_mnt']=str(pd.NA)
+
     return cleaned_dataset
 
 

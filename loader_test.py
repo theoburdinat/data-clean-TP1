@@ -156,9 +156,9 @@ def sample_formatted() -> pd.DataFrame:
                            43.6020241317034,
                            43.5911769531706,
                            43.5995832643803]})
-    df = df.astype(dtype= {'nom': str, 'adr_num': str, 'adr_voie': str,
-               'com_cp': str, 'com_nom': str, 'tel1': str, 
-               'freq_mnt': str, 'dermnt': str, 
+    df = df.astype(dtype= {'nom': 'string', 'adr_num': 'string', 'adr_voie': 'string',
+               'com_cp': 'string', 'com_nom': 'string', 'tel1': 'string', 
+               'freq_mnt': 'string', 'dermnt': 'datetime64[ns]', 
                'lat_coor1': 'float', 'long_coor1': 'float'})
 
     return df
