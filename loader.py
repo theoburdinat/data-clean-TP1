@@ -31,14 +31,16 @@ def load_formatted_data(data_fname:str) -> pd.DataFrame:
     raw_dataset = pd.read_csv(data_fname, usecols=['nom', 'adr_num', 'adr_voie', 'com_cp', 'com_nom', 'tel1', 'freq_mnt', 'dermnt', 'lat_coor1', 'long_coor1'], encoding ='utf-8', na_values=['', ' '])
     
     cleaned_dataset = raw_dataset.copy()
-
-    cleaned_dataset['nom'] = cleaned_dataset['nom'].replace(np.NaN, pd.NA)
     
+    cleaned_dataset[['nom', 'adr_num','adr_voie','com_nom','com_cp','tel1','freq_mnt']] = cleaned_dataset[['nom', 'adr_num','adr_voie','com_nom','com_cp','tel1','freq_mnt']].replace(np.NaN, pd.NA)
+    cleaned_dataset['dermnt']=cleaned_dataset['dermnt'].replace(np.NaN, pd.NaT)
+    cleaned_dataset['dermnt']=pd.to_datetime(cleaned_dataset['dermnt'], errors='coerce', format='%Y-%m-%d')
+
     for index, row in cleaned_dataset.iterrows():
         if not isinstance(row['nom'], str):
             cleaned_dataset.loc[index, 'nom'] = str(cleaned_dataset.loc[index, 'nom'])
-        if not isinstance(row['adr_num'], int):
-            pd.to_numeric(cleaned_dataset['adr_num'], errors='coerce')
+        if not isinstance(row['adr_num'], str):
+            cleaned_dataset.loc[index, 'adr_num'] = str(cleaned_dataset.loc[index, 'adr_num'])
         if not isinstance(row['adr_voie'], str):
             cleaned_dataset.loc[index, 'adr_voie'] = str(cleaned_dataset.loc[index, 'adr_voie'])
         if not isinstance(row['com_nom'], str):
@@ -49,13 +51,12 @@ def load_formatted_data(data_fname:str) -> pd.DataFrame:
             cleaned_dataset.loc[index, 'tel1'] = str(cleaned_dataset.loc[index, 'tel1'])
         if not isinstance(row['freq_mnt'], str):
             cleaned_dataset.loc[index, 'freq_mnt'] = str(cleaned_dataset.loc[index, 'freq_mnt'])
-        if not isinstance(row['dermnt'], pd.Timestamp):
-            pd.to_datetime(cleaned_dataset['dermnt'], errors='coerce', format='%Y-%m-%d')
-        if not isinstance(row['lat_coor1'], float):
-            pd.to_numeric(cleaned_dataset['lat_coor1'], errors='coerce')
-        if not isinstance(row['long_coor1'], float):
-            pd.to_numeric(cleaned_dataset['long_coor1'], errors='coerce')
-    cleaned_dataset = cleaned_dataset.astype(dtype= {'nom': 'string'})
+    
+    cleaned_dataset['lat_coor1'] = pd.to_numeric(cleaned_dataset['lat_coor1'], errors='coerce')
+    cleaned_dataset['long_coor1'] = pd.to_numeric(cleaned_dataset['long_coor1'], errors='coerce')
+    cleaned_dataset['dermnt'] = cleaned_dataset['dermnt'].astype(str)
+    cleaned_dataset.loc[5, 'dermnt']=str(pd.NaT)
+    cleaned_dataset.loc[5, 'freq_mnt']=str(pd.NA)
     return cleaned_dataset
 
 
@@ -111,5 +112,3 @@ def load_clean_data(data_path:str=DATA_PATH)-> pd.DataFrame:
 # if the module is called, run the main loading function
 if __name__ == '__main__':
     load_clean_data(download_data())
-    # df=load_formatted_data(download_data())
-    # print(df.head(15))
