@@ -32,7 +32,8 @@ def load_formatted_data(data_fname:str) -> pd.DataFrame:
     
     cleaned_dataset = raw_dataset.copy()
 
-
+    cleaned_dataset['nom'] = cleaned_dataset['nom'].replace(np.NaN, pd.NA)
+    
     for index, row in cleaned_dataset.iterrows():
         if not isinstance(row['nom'], str):
             cleaned_dataset.loc[index, 'nom'] = str(cleaned_dataset.loc[index, 'nom'])
@@ -54,9 +55,7 @@ def load_formatted_data(data_fname:str) -> pd.DataFrame:
             pd.to_numeric(cleaned_dataset['lat_coor1'], errors='coerce')
         if not isinstance(row['long_coor1'], float):
             pd.to_numeric(cleaned_dataset['long_coor1'], errors='coerce')
-
-    cleaned_dataset['nom'] = cleaned_dataset['nom'].replace('nan', pd.NA)
-
+    cleaned_dataset = cleaned_dataset.astype(dtype= {'nom': 'string'})
     return cleaned_dataset
 
 
