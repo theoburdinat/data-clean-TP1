@@ -5,7 +5,7 @@ import pandas as pd
 
 DATA_PATH = 'data/MMM_MMM_DAE.csv'
 
-def download_data(url, force_download=False, ):
+def download_data(url = DATA_PATH, force_download=False):
     # Utility function to donwload data if it is not in disk
     data_path = os.path.join('data', os.path.basename(url.split('?')[0]))
     if not os.path.exists(data_path) or force_download:
@@ -28,11 +28,36 @@ def load_formatted_data(data_fname:str) -> pd.DataFrame:
     """ One function to read csv into a dataframe with appropriate types/formats.
         Note: read only pertinent columns, ignore the others.
     """
-    df = pd.read_csv(
-        data_fname,
-        usecols=['nom', 'adr_num', 'adr_voie', 'com_cp', 'com_nom', 'tel1', 'freq_mnt', 'dermnt', 'lat_coor1', 'long_coor1'],
-        dtype={'nom':str, 'adr_num':str, 'adr_voie':str, 'com_cp':str, 'com_nom':str, 'tel1':str, 'freq_mnt':str, 'dermnt':pd.Timestamp, 'lat_coor1':np.float64, 'long_coor1':np.float64})
-    return df
+    raw_dataset = pd.read_csv(data_fname, usecols=['nom', 'adr_num', 'adr_voie', 'com_cp', 'com_nom', 'tel1', 'freq_mnt', 'dermnt', 'lat_coor1', 'long_coor1'], encoding ='utf-8', na_values=['', ' '])
+    
+    cleaned_dataset = raw_dataset.copy()
+
+
+    for index, row in cleaned_dataset.iterrows():
+        if not isinstance(row['nom'], str):
+            cleaned_dataset.loc[index, 'nom'] = str(cleaned_dataset.loc[index, 'nom'])
+        if not isinstance(row['adr_num'], int):
+            pd.to_numeric(cleaned_dataset['adr_num'], errors='coerce')
+        if not isinstance(row['adr_voie'], str):
+            cleaned_dataset.loc[index, 'adr_voie'] = str(cleaned_dataset.loc[index, 'adr_voie'])
+        if not isinstance(row['com_nom'], str):
+            cleaned_dataset.loc[index, 'com_nom'] = str(cleaned_dataset.loc[index, 'com_nom'])
+        if not isinstance(row['com_cp'], str):
+            cleaned_dataset.loc[index, 'com_cp'] = str(cleaned_dataset.loc[index, 'com_cp'])
+        if not isinstance(row['tel1'], str):
+            cleaned_dataset.loc[index, 'tel1'] = str(cleaned_dataset.loc[index, 'tel1'])
+        if not isinstance(row['freq_mnt'], str):
+            cleaned_dataset.loc[index, 'freq_mnt'] = str(cleaned_dataset.loc[index, 'freq_mnt'])
+        if not isinstance(row['dermnt'], pd.Timestamp):
+            pd.to_datetime(cleaned_dataset['dermnt'], errors='coerce', format='%Y-%m-%d')
+        if not isinstance(row['lat_coor1'], float):
+            pd.to_numeric(cleaned_dataset['lat_coor1'], errors='coerce')
+        if not isinstance(row['long_coor1'], float):
+            pd.to_numeric(cleaned_dataset['long_coor1'], errors='coerce')
+
+    cleaned_dataset['nom'] = cleaned_dataset['nom'].replace('nan', pd.NA)
+
+    return cleaned_dataset
 
 
 # once they are all done, call them in the general sanitizing function
@@ -87,3 +112,5 @@ def load_clean_data(data_path:str=DATA_PATH)-> pd.DataFrame:
 # if the module is called, run the main loading function
 if __name__ == '__main__':
     load_clean_data(download_data())
+    # df=load_formatted_data(download_data())
+    # print(df.head(15))
