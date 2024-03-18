@@ -74,7 +74,7 @@ def sanitize_data(df:pd.DataFrame) -> pd.DataFrame:
     df.loc[df['adr_voie'] == '-', 'adr_voie'] = pd.NA
     for i in range(len(df)):
         if pd.notna(df.loc[i, 'adr_voie']):
-            # If there is the total adress in this field, we remove unnecassary stuff (from the zip code)
+            # If there is the total address in this field, we remove unnecassary stuff (from the zip code)
             if re.match(r'.*\b\d{5}\b.*', df.loc[i, 'adr_voie']):
                 df.loc[i, 'adr_voie'] = re.sub(r'\s*\b\d{5}\b.*', '', df.loc[i, 'adr_voie'])
             # If there is more than two spaces, we only put one
@@ -121,14 +121,22 @@ def sanitize_data(df:pd.DataFrame) -> pd.DataFrame:
 # Define a framing function
 def frame_data(df:pd.DataFrame) -> pd.DataFrame:
     """ One function all framing (column renaming, column merge)"""
-    df['adr_num'] = df['adr_num '] + df['adr_voie '] + df['com_cp '] + df['com_nom ']
-    df.rename(columns={'adr_num':'adress'})
-    df.rename(columns={'long_coor1':'long'})
-    df.rename(columns={'lat_coor1':'lat'})
-    del df['adr_voie']
-    del df['com_cp']
-    del df['com_nom']
-    return df
+    final_df = df.copy()
+    #Column renaming
+    final_df.rename(columns={'nom':'Name', 'tel1':'Phone number', 'freq_mnt':'Maintenance frequency', 'dermnt':'Last maintenance', 'lat_coor1':'Latitude', 'long_coor1':'Longitude'}, inplace=True)
+    # Creation of the Address column, merging all independant address columns
+    final_df.insert(1, 'Address', final_df['adr_num'].fillna('') + ' ' + final_df['adr_voie'].fillna('') + ' ' + final_df['com_cp'].fillna('') + ' ' + final_df['com_nom'].fillna(''))
+    # Delete double/triple spaces
+    for i in range(len(final_df)):
+        final_df.loc[i, 'Address']=' '.join(final_df.loc[i, 'Address'].split())
+    # Set back null values if needed
+    final_df.loc[final_df['Address']=='', 'Address'] = pd.NA
+    # Delete merged columns
+    del final_df['adr_num']
+    del final_df['adr_voie']
+    del final_df['com_cp']
+    del final_df['com_nom']
+    return final_df
 
 
 # once they are all done, call them in the general clean loading function
@@ -143,4 +151,5 @@ def load_clean_data(data_path:str=DATA_PATH)-> pd.DataFrame:
 
 # if the module is called, run the main loading function
 if __name__ == '__main__':
-    load_clean_data(download_data())
+    cleaned_df = load_clean_data(download_data())
+    cleaned_df.to_csv('data/cleaned.csv', index=False)
