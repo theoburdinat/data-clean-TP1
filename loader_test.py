@@ -209,7 +209,7 @@ def sample_sanitized() -> pd.DataFrame:
                          'Rue Pierre Gilles de Gennes',
                          'place Thermidor',
                          'avenue du Dr Jacques Fourcade',
-                         'rue du lavandin'],
+                         'rue du Lavandin'],
             'com_cp': ['34000',
                        pd.NA,
                        '34070',
@@ -291,7 +291,7 @@ def sample_sanitized() -> pd.DataFrame:
                           np.NaN,
                           3.91169364237597,
                           3.91771559166406,
-                          np.Nan,
+                          np.NaN,
                           3.89668282061293,
                           3.85476904201268],
             'long_coor1': [43.6136351580956,
@@ -307,15 +307,13 @@ def sample_sanitized() -> pd.DataFrame:
                            43.5989740313524,
                            43.6020241317034,
                            43.5911769531706,
-                           43.5995832643803]},
-        dtype={'nom': 'string', 'adr_num': 'string', 'adr_voie': 'string',
-               'com_cp': 'string', 'com_nom': 'string', 'tel1': 'string', 
-               'freq_mnt': 'string', 'dermnt': 'string', 
-               'lat_coor1': 'float', 'long_coor1': 'float'}
-    
+                           43.5995832643803]}
     )
+    df = df.astype(dtype= {'nom': 'string', 'adr_num': 'string', 'adr_voie': 'string',
+               'com_cp': 'string', 'com_nom': 'string', 'tel1': 'string', 
+               'freq_mnt': 'string', 'dermnt': 'datetime64[ns]', 
+               'lat_coor1': 'float', 'long_coor1': 'float'})
     return df
-
 
 @pytest.fixture
 def sample_framed() -> pd.DataFrame:
@@ -449,5 +447,4 @@ def test_load_clean_data(sample_dirty_fname, sample_framed):
 
 def assert_column_equal(clean, target, column):
     # utility function if you which to implement column-specific assertion tests
-    assert clean[column].equals(
-        target[column]), f"Result should be {clean[column]} but was {target[column]}"
+    assert clean[column].equals(target[column]), f"Result should be {clean[column]} but was {target[column]}"

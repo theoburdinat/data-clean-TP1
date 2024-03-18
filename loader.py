@@ -1,4 +1,5 @@
 import os
+import re
 import requests
 import numpy as np
 import pandas as pd
@@ -56,28 +57,63 @@ def load_formatted_data(data_fname:str) -> pd.DataFrame:
 # once they are all done, call them in the general sanitizing function
 def sanitize_data(df:pd.DataFrame) -> pd.DataFrame:
     """ One function to do all sanitizing
-        Comment on sanitize : 
-        - pas d'adresse -> on enleve num voie (fait)
-        - Formatter montpellier (fait)
-        - Formatter num tél (fait)
-        - Formatter fréquence de maintenance 
-        - Code postal si pas correct (5 chiffres) -> mettre pd.NA (fait)
-        - Vérifier number of units for lat_coor et long_coor """
+    """
     
-    #Code Postal
+    # Address number
+    df.loc[df['adr_num'] == '-', 'adr_num'] = pd.NA
     for i in range(len(df)):
-        if len(df[i].com_cp) != 5:
-            df[i].com_cp=pd.NA
-        if df[i].adr_voie==pd.NA: #pas d'adresse on enleve num voie
-            df[i].adr_num=pd.NA
-        if df[i].freq_mnt!="": #formatter maintenance
-            df[i].freq_mnt='Tous les ans'
-    #Formater Montpellier
+        if pd.notna(df.loc[i, 'adr_num']):
+            # Delete space around -
+            if re.match(r'^\d+\s*-\s*\d+$', df.loc[i, 'adr_num']):
+                df.loc[i, 'adr_num'] = re.sub(r'\s*-\s*', '-', df.loc[i, 'adr_num'])
+            # Delete unwanted characters
+            elif re.match(r'^(\d+)(?!\s*bis)\D+', df.loc[i, 'adr_num']):
+                df.loc[i, 'adr_num'] = re.sub(r'^(\d+)(?!\s*bis)\D+', r'\1', df.loc[i, 'adr_num'])
+
+    # Name of the street
+    df.loc[df['adr_voie'] == '-', 'adr_voie'] = pd.NA
+    for i in range(len(df)):
+        if pd.notna(df.loc[i, 'adr_voie']):
+            # If there is the total adress in this field, we remove unnecassary stuff (from the zip code)
+            if re.match(r'.*\b\d{5}\b.*', df.loc[i, 'adr_voie']):
+                df.loc[i, 'adr_voie'] = re.sub(r'\s*\b\d{5}\b.*', '', df.loc[i, 'adr_voie'])
+            # If there is more than two spaces, we only put one
+            if re.match(r'.*\s{2,}.*', df.loc[i, 'adr_voie']):
+                df.loc[i, 'adr_voie'] = re.sub(r'\s{2,}', ' ', df.loc[i, 'adr_voie'])
+            # If there is the number of the street, we delete it
+            if re.match(r'^\d+\s+.*', df.loc[i, 'adr_voie']):
+                df.loc[i, 'adr_voie'] = re.sub(r'^\d+\s+', '', df.loc[i, 'adr_voie'])
+            # We delete all stuff after commas
+            if re.match(r'.*,.*', df.loc[i, 'adr_voie']):
+                df.loc[i, 'adr_voie'] = re.sub(r',.*', '', df.loc[i, 'adr_voie'])
+            # We have to put caps on the last word
+            words = df.loc[i, 'adr_voie'].split()
+            words[-1] = words[-1].title()
+            df.loc[i, 'adr_voie'] = ' '.join(words)
+
+    # ZIP code
+    df.loc[df['com_cp'] == '0', 'com_cp'] = pd.NA
+
+    # City name
+    # We have to put the last word with a cap on the first letter, and the rest in small letters
     df['com_nom'] = df['com_nom'].str.capitalize()
 
-    #Numéro de tel
-    df['tel1'] = df['tel1'].str.replace(r'^(\+?33|0)\s*', r'+33 ', regex=True)
-    df['tel1'] = df['tel1'].str.replace(r'(\d{1})(\d{2})(\d{2})(\d{2})(\d{2})', r'\1 \2 \3 \4 \5', regex=True)
+    # Phone number
+    df.loc[df['tel1'] == '-', 'tel1'] = pd.NA
+    for i in range(len(df)):
+        # Phone number format
+        if pd.notna(df.loc[i, 'tel1']):
+            digits = re.findall(r'([^3])\s*(\d{2})\s*(\d{2})\s*(\d{2})\s*(\d{2})', df.loc[i, 'tel1'])
+            if digits:
+                df.loc[i, 'tel1'] = "+33 {} {} {} {} {}".format(*digits[0])
+
+    # Maintenance frequency
+    df['freq_mnt'] = df['freq_mnt'].str.capitalize()  
+    for i in range(len(df)):
+        # Spelling mistakes correction
+        if pd.notna(df.loc[i, 'freq_mnt']):
+            if re.match(r'Tout.*', df.loc[i, 'freq_mnt']):
+                df.loc[i, 'freq_mnt'] = re.sub(r'Tout', 'Tous', df.loc[i, 'freq_mnt'])
 
     return df
 
